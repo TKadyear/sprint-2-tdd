@@ -27,7 +27,7 @@ describe("class Room, method isOccupied", () => {
   test("If the room is not occupied", () => {
     const bookingList = [{ ...templateBookings, checkIn: "2022-06-10", checkOut: "2022-06-30" }, { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" }]
     //Arrange
-    const room = new Room({ ...templateRoom, booking: bookingList });
+    const room = new Room({ ...templateRoom, bookings: bookingList });
     // Act
     const actualValue = room.isOccupied("2022-10-18");
     // Assert
@@ -36,7 +36,7 @@ describe("class Room, method isOccupied", () => {
   test("If the room is occupied", () => {
     //Arrange
     const bookingList = [{ ...templateBookings, checkIn: "2022-06-10", checkOut: "2022-06-30" }, { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" }]
-    const room = new Room({ ...templateRoom, booking: bookingList });
+    const room = new Room({ ...templateRoom, bookings: bookingList });
     const expectValue = "Bertha Raynor";
     // Act
     const actualValue = room.isOccupied("2022-06-18");
@@ -54,7 +54,7 @@ describe("class Room, method occupancyPercentage", () => {
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" },
       { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-11" },
     ]
-    const room = new Room({ ...templateRoom, booking: bookingList });
+    const room = new Room({ ...templateRoom, bookings: bookingList });
     const expectValue = 50;
     // Act
     const duration = { startDate: "2022-06-01", endDate: "2022-06-20" }
@@ -72,7 +72,7 @@ describe("class Room, method occupancyPercentage", () => {
       { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" },
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" }
     ]
-    const room = new Room({ ...templateRoom, booking: bookingList });
+    const room = new Room({ ...templateRoom, bookings: bookingList });
     const expectValue = 83; // 20days / 15 days is occupied = 1.333 , 1.333 * 5 = 8.333 , 8.333 * 10
     // Act
     const duration = { startDate: "2022-06-01", endDate: "2022-06-20" };
@@ -166,8 +166,8 @@ describe("Function totalOccupancyPercentage", () => {
       { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-11" },
     ]
     const listRooms = [
-      new Room({ ...templateRoom, booking: bookingList }),
-      new Room({ ...templateRoom, name: "Suite Sea", booking: anotherBookingList })
+      new Room({ ...templateRoom, bookings: bookingList }),
+      new Room({ ...templateRoom, name: "Suite Sea", bookings: anotherBookingList })
     ];
     const expectValue = 67; // 83 + 50 (occupancy each room)= 133 , 133 / 2(quantity/amount ) = Math.round(66.5)
     const params = { rooms: [...listRooms], startDate: "2022-10-01", endDate: "2022-10-15" };
@@ -179,7 +179,7 @@ describe("Function totalOccupancyPercentage", () => {
   test("When any room is occupied in that duration", () => {
     //Arrange
     const listRooms = [
-      new Room({ ...templateRoom, booking: bookingList }),
+      new Room({ ...templateRoom, bookings: bookingList }),
       new Room({ ...templateRoom, name: "Suite Sea", booking: bookingList })
     ];
     const expectValue = 0;
@@ -221,9 +221,9 @@ describe("Function availableRooms", () => {
 
   test("Check the availables rooms", () => {
     //Arrange
-    const room1 = new Room({ ...templateRoom, booking: [...bookingList] });
-    const room2 = new Room({ ...templateRoom, name: "Suite Sea", booking: [...anotherBookingList] });
-    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", booking: [...anotherBookingList] });
+    const room1 = new Room({ ...templateRoom, bookings: [...bookingList] });
+    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookings: [...anotherBookingList] });
+    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookings: [...anotherBookingList] });
     const listRooms = [room1, room2, room3];
     const expectValue = [room1, room2, room3];
 
@@ -235,9 +235,9 @@ describe("Function availableRooms", () => {
   })
   test("Edge case because the checkIn one of the booked room and the checkout of the params are the same day", () => {
     //Arrange
-    const room1 = new Room({ ...templateRoom, booking: [...bookingList] });
-    const room2 = new Room({ ...templateRoom, name: "Suite Sea", booking: [...anotherBookingList] });
-    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", booking: [...anotherBookingList] });
+    const room1 = new Room({ ...templateRoom, bookings: [...bookingList] });
+    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookings: [...anotherBookingList] });
+    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookings: [...anotherBookingList] });
     const listRooms = [room1, room2, room3];
     const expectValue = [room2, room3];
 
@@ -249,9 +249,9 @@ describe("Function availableRooms", () => {
   })
   test("When any room is available", () => {
     //Arrange
-    const room1 = new Room({ ...templateRoom, booking: [...bookingList] });
-    const room2 = new Room({ ...templateRoom, name: "Suite Sea", booking: [...anotherBookingList] });
-    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", booking: [...anotherBookingList] });
+    const room1 = new Room({ ...templateRoom, bookings: [...bookingList] });
+    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookings: [...anotherBookingList] });
+    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookings: [...anotherBookingList] });
     const listRooms = [room1, room2, room3];
     // const expectValue = [];
 
