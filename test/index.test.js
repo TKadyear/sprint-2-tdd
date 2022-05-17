@@ -231,7 +231,7 @@ describe("Function availableRooms", () => {
     // Act
     const actualValue = availableRooms(params);
     // Assert
-    expect(actualValue).toBeEqual(expectValue);
+    expect(actualValue).toEqual(expectValue);
   })
   test("Edge case because the checkIn one of the booked room and the checkout of the params are the same day", () => {
     //Arrange
@@ -245,7 +245,7 @@ describe("Function availableRooms", () => {
     // Act
     const actualValue = availableRooms(params);
     // Assert
-    expect(actualValue).toBeEqual(expectValue);
+    expect(actualValue).toEqual(expectValue);
   })
   test("When any room is available", () => {
     //Arrange
