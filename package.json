@@ -8,6 +8,6 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^2.9.9"
+    "jest": "^28.1.0"
   }
 }
