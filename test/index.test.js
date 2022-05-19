@@ -10,7 +10,7 @@ const templateBookings = {
   name: "Bertha Raynor",
   email: "berthaR@gmail.com",
   checkIn: "2022-05-17T12:53:14.850Z",
-  checkIn: "2022-05-17T12:53:14.850Z",
+  checkOut: "2022-05-17T12:53:14.850Z",
   discount: 0,
   room: { ...templateRoom }
 };
