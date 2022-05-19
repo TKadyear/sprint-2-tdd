@@ -45,8 +45,8 @@ describe("class Room, method isOccupied", () => {
   })
 })
 
-describe.only("class Room, method occupancyPercentage", () => {
-  test("Check the occupancyPercentage", () => {
+describe("class Room, method occupancyPercentage", () => {
+  test("Check the  50 occupancyPercentage", () => {
     //Arrange
     const bookingList = [
       { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
@@ -57,12 +57,30 @@ describe.only("class Room, method occupancyPercentage", () => {
     const room = new Room({ ...templateRoom, bookings: bookingList });
     const expectValue = 50;
     // Act
-    const duration = { startDate: "2022-06-01", endDate: "2022-06-20" }
+    const duration = { startDate: "2022-06-01", endDate: "2022-06-21" }
     const actualValue = room.occupancyPercentage({ ...duration });
     // Assert
     expect(actualValue).toBe(expectValue);
   })
-  test("Check the occupancyPercentage", () => {
+  test("Check the 75  occupancyPercentage", () => {
+    //Arrange
+    const bookingList = [
+      { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
+      { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-12" },
+      { ...templateBookings, checkIn: "2022-06-17", checkOut: "2022-06-30" },
+      { ...templateBookings, checkIn: "2022-07-10", checkOut: "2022-07-19" },
+      { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" },
+      { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" }
+    ]
+    const room = new Room({ ...templateRoom, bookings: bookingList });
+    const expectValue = 75; // 15days / 20 days is occupied = 0.75 , 0.75 * 100 = 75
+    // Act
+    const duration = { startDate: "2022-06-01", endDate: "2022-06-21" };
+    const actualValue = room.occupancyPercentage({ ...duration });
+    // Assert
+    expect(actualValue).toBe(expectValue);
+  })
+  test("Check the 100 occupancyPercentage", () => {
     //Arrange
     const bookingList = [
       { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
@@ -73,9 +91,9 @@ describe.only("class Room, method occupancyPercentage", () => {
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" }
     ]
     const room = new Room({ ...templateRoom, bookings: bookingList });
-    const expectValue = 75; // 15days / 20 days is occupied = 0.75 , 0.75 * 100 = 75
+    const expectValue = 100; // 15days / 20 days is occupied = 0.75 , 0.75 * 100 = 75
     // Act
-    const duration = { startDate: "2022-06-01", endDate: "2022-06-20" };
+    const duration = { startDate: "2022-06-01", endDate: "2022-06-05" };
     const actualValue = room.occupancyPercentage({ ...duration });
     // Assert
     expect(actualValue).toBe(expectValue);
@@ -150,27 +168,29 @@ describe("class Booking, method getFee", () => {
 
 describe("Function totalOccupancyPercentage", () => {
   const bookingList = [
-    { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-05" },
-    { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-11" },
-    { ...templateBookings, checkIn: "2022-06-19", checkOut: "2022-06-30" },
+    { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
+    { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-12" },
+    { ...templateBookings, checkIn: "2022-06-17", checkOut: "2022-06-30" },
     { ...templateBookings, checkIn: "2022-07-10", checkOut: "2022-07-19" },
     { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" },
     { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" }
   ];
+
   test("Check the totalOccupancyPercentage", () => {
     //Arrange
     const anotherBookingList = [
-      { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-05" },
-      { ...templateBookings, checkIn: "2022-07-10", checkOut: "2022-07-19" },
+      { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
+      { ...templateBookings, checkIn: "2022-07-10", checkOut: "2022-07-30" },
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" },
       { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-11" },
     ]
+
     const listRooms = [
       new Room({ ...templateRoom, bookings: bookingList }),
       new Room({ ...templateRoom, name: "Suite Sea", bookings: anotherBookingList })
     ];
-    const expectValue = 67; // 83 + 50 (occupancy each room)= 133 , 133 / 2(quantity/amount ) = Math.round(66.5)
-    const params = { rooms: [...listRooms], startDate: "2022-10-01", endDate: "2022-10-15" };
+    const expectValue = 63; // 75 + 50 (occupancy each room)= 125 , 125 / 2(quantity/amount ) = Math.round(62.5)
+    const params = { rooms: [...listRooms], startDate: "2022-06-01", endDate: "2022-06-21" };
     // Act
     const actualValue = totalOccupancyPercentage(params);
     // Assert
