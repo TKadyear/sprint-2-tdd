@@ -14,7 +14,7 @@ const templateBookings = {
   discount: 0,
   room: { ...templateRoom }
 };
-// TODO mock of array Booking
+
 describe("class Room, method isOccupied", () => {
   test("If the room is not occupied and the booking array is empty", () => {
     //Arrange
@@ -73,7 +73,7 @@ describe("class Room, method occupancyPercentage", () => {
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" }
     ]
     const room = new Room({ ...templateRoom, bookings: bookingList });
-    const expectValue = 83; // 20days / 15 days is occupied = 1.333 , 1.333 * 5 = 8.333 , 8.333 * 10
+    const expectValue = 75; // 15days / 20 days is occupied = 0.75 , 0.75 * 100 = 75
     // Act
     const duration = { startDate: "2022-06-01", endDate: "2022-06-20" };
     const actualValue = room.occupancyPercentage({ ...duration });
