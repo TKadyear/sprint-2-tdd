@@ -4,7 +4,16 @@ const getDaysBetween = (startDate, endDate) => {
   const tiempo = 1000 * 60 * 60 * 24;
   return Math.round((msPass / tiempo))
 };
-;
+const isInRange = ({ filterStartDate, filterEndDate, checkIn, checkOut }) => {
+  const FilterStartDate = getTimeStamp(filterStartDate);
+  const FilterEndDate = getTimeStamp(filterEndDate);
+  const CheckIn = getTimeStamp(checkIn);
+  const CheckOut = getTimeStamp(checkOut);
+  const conditionCheckIn = CheckIn >= FilterStartDate && CheckIn <= FilterEndDate;
+  const conditionCheckOut = CheckOut >= FilterStartDate && CheckOut <= FilterEndDate;
+  const conditionInProgress = CheckIn <= FilterStartDate && CheckOut >= FilterEndDate;
+  return (conditionCheckIn || conditionCheckOut || conditionInProgress);
+};
 class Room {
   constructor({ name, bookings, rate, discount }) {
     this.name = name; //String
@@ -24,16 +33,7 @@ class Room {
     return findRoom ? findRoom.name : false;
   }
   occupancyPercentage({ startDate, endDate }) {
-    const bookedRoomInThatRange = [...this.bookings].filter(room => {
-      const FilterStartDate = getTimeStamp(startDate);
-      const FilterEndDate = getTimeStamp(endDate);
-      const CheckIn = getTimeStamp(room.checkIn);
-      const CheckOut = getTimeStamp(room.checkOut);
-      const conditionCheckIn = CheckIn >= FilterStartDate && CheckIn <= FilterEndDate;
-      const conditionCheckOut = CheckOut >= FilterStartDate && CheckOut <= FilterEndDate;
-      const conditionInProgress = CheckIn <= FilterStartDate && CheckOut >= FilterEndDate;
-      return (conditionCheckIn || conditionCheckOut || conditionInProgress);
-    });
+    const bookedRoomInThatRange = [...this.bookings].filter(room => isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: room.checkIn, checkOut: room.checkOut }));
     const listDurationBooked = bookedRoomInThatRange.map(room => {
       if (getTimeStamp(room.checkOut) > getTimeStamp(endDate)) {
         return getDaysBetween(room.checkIn, endDate);
@@ -43,7 +43,8 @@ class Room {
     const totalDaysIsOccupied = listDurationBooked.reduce((prevValue, currentValue) => {
       return currentValue + prevValue;
     }, 0);
-    const totalDaysFilter = getDaysBetween(startDate, endDate) + 1;
+    const totalDaysFilter = getDaysBetween(startDate, endDate);
+    // console.log(bookedRoomInThatRange, listDurationBooked, totalDaysIsOccupied, totalDaysFilter);
     const result = Math.round((totalDaysIsOccupied / totalDaysFilter) * 100);
     return result;
   }
@@ -64,6 +65,16 @@ class Booking {
     return result;
   }
 };
-const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => { };
+const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
+  const occupancyRooms = [...rooms].map(room => {
+    // console.log(room, room.occupancyPercentage({ startDate: startDate, endDate: endDate }))
+    return room.occupancyPercentage({ startDate: startDate, endDate: endDate })
+  });
+  const totalDaysIsOccupied = occupancyRooms.reduce((prevValue, currentValue) => {
+    return currentValue + prevValue;
+  }, 0);
+  const result = Math.round(totalDaysIsOccupied / rooms.length);
+  return result;
+};
 const availableRooms = ({ rooms, startDate, endDate }) => { };
 module.exports = { Room, Booking, totalOccupancyPercentage, availableRooms };
