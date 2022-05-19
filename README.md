@@ -5,7 +5,7 @@ Make the next class with the methods:
 - Room
   -  Properties:
        -  Name - string
-       -  Bookings - array of Booking objects in these room
+       -  Bookings - array of Booking objects in this room
        -  Rate - ``int price in cents``
        -  Discount - ``int percentage``
 
