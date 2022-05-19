@@ -76,5 +76,9 @@ const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
   const result = Math.round(totalDaysIsOccupied / rooms.length);
   return result;
 };
-const availableRooms = ({ rooms, startDate, endDate }) => { };
+const availableRooms = ({ rooms, startDate, endDate }) => {
+  return [...rooms].filter(room => {
+    return isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: room.checkIn, checkOut: room.checkOut }) === false;
+  });
+};
 module.exports = { Room, Booking, totalOccupancyPercentage, availableRooms };
