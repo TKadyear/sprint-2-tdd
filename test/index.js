@@ -33,17 +33,18 @@ class Room {
     return findRoom ? findRoom.name : false;
   }
   occupancyPercentage({ startDate, endDate }) {
-    const bookedRoomInThatRange = [...this.bookings].filter(room =>
-      isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: room.checkIn, checkOut: room.checkOut }));
-    const listDurationBooked = bookedRoomInThatRange.map(room => {
-      if (getTimeStamp(room.checkOut) > getTimeStamp(endDate)) {
-        return getDaysBetween(room.checkIn, endDate);
-      }
-      return getDaysBetween(room.checkIn, room.checkOut);
-    });
-    const totalDaysIsOccupied = listDurationBooked.reduce((prevValue, currentValue) => {
-      return currentValue + prevValue;
-    }, 0);
+    const totalDaysIsOccupied = [...this.bookings]
+      .filter(room =>
+        isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: room.checkIn, checkOut: room.checkOut }))
+      .map(room => {
+        if (getTimeStamp(room.checkOut) > getTimeStamp(endDate)) {
+          return getDaysBetween(room.checkIn, endDate);
+        }
+        return getDaysBetween(room.checkIn, room.checkOut);
+      })
+      .reduce((prevValue, currentValue) => {
+        return currentValue + prevValue;
+      }, 0);
     const totalDaysFilter = getDaysBetween(startDate, endDate);
     const result = Math.round((totalDaysIsOccupied / totalDaysFilter) * 100);
     return result;
@@ -73,16 +74,18 @@ const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
     return currentValue + prevValue;
   }, 0);
   const result = Math.round(totalDaysIsOccupied / rooms.length);
+  console.log(totalDaysIsOccupied, rooms.length, result);
   return result;
 };
+
 const availableRooms = ({ rooms, startDate, endDate }) => {
-  console.error("----Comienzo----")
-  console.error(rooms)
+
   const available = [...rooms].filter(room => {
     const isValid = room.bookings.some(booked => isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: booked.checkIn, checkOut: booked.checkOut }) === true)
-    console.log(room.bookings, isValid, startDate, endDate)
     return !isValid;
   });
+
+
   return available.length ? available : false;
 };
 module.exports = { Room, Booking, totalOccupancyPercentage, availableRooms };

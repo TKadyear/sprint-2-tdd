@@ -224,7 +224,7 @@ describe("Function totalOccupancyPercentage", () => {
   })
 })
 
-describe.only("Function availableRooms", () => {
+describe("Function availableRooms", () => {
 
 
   const bookingList = [
@@ -254,7 +254,7 @@ describe.only("Function availableRooms", () => {
     const listRooms = [room1, room2, room3];
     const expectValue = [room1, room2, room3];
 
-    const params = { rooms: [...listRooms], startDate: "2022-07-06", endDate: "2022-06-09" };
+    const params = { rooms: [...listRooms], startDate: "2022-10-06", endDate: "2022-10-09" };
     // Act
     const actualValue = availableRooms(params);
     // Assert
@@ -266,13 +266,12 @@ describe.only("Function availableRooms", () => {
     const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookings: [...SuiteSeaBookingList] });
     const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookings: [...OceanBlueBookingList] });
     const listRooms = [room1, room2, room3];
-    const expectValue = [room2, room3];
 
     const params = { rooms: [...listRooms], startDate: "2022-06-06", endDate: "2022-06-10" };
     // Act
     const actualValue = availableRooms(params);
     // Assert
-    expect(actualValue).toEqual(expectValue);
+    expect(actualValue).toBeFalsy();
   })
   test("When any room is available", () => {
     //Arrange
