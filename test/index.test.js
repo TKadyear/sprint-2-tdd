@@ -45,11 +45,11 @@ describe("class Room, method isOccupied", () => {
   })
 })
 
-describe("class Room, method occupancyPercentage", () => {
+describe.only("class Room, method occupancyPercentage", () => {
   test("Check the occupancyPercentage", () => {
     //Arrange
     const bookingList = [
-      { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-05" },
+      { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
       { ...templateBookings, checkIn: "2022-07-10", checkOut: "2022-07-30" },
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" },
       { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-11" },
@@ -65,9 +65,9 @@ describe("class Room, method occupancyPercentage", () => {
   test("Check the occupancyPercentage", () => {
     //Arrange
     const bookingList = [
-      { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-05" },
-      { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-11" },
-      { ...templateBookings, checkIn: "2022-06-19", checkOut: "2022-06-30" },
+      { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
+      { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-13" },
+      { ...templateBookings, checkIn: "2022-06-17", checkOut: "2022-06-30" },
       { ...templateBookings, checkIn: "2022-07-10", checkOut: "2022-07-19" },
       { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" },
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" }
