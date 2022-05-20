@@ -46,6 +46,7 @@ class Room {
         return currentValue + prevValue;
       }, 0);
     const totalDaysFilter = getDaysBetween(startDate, endDate);
+    console.error(totalDaysIsOccupied, totalDaysFilter)
     const result = Math.round((totalDaysIsOccupied / totalDaysFilter) * 100);
     return result;
   }
@@ -67,7 +68,9 @@ class Booking {
   }
 };
 const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
+  console.error("------")
   const occupancyRooms = [...rooms].map(room => {
+    console.log(room.occupancyPercentage({ startDate: startDate, endDate: endDate }))
     return room.occupancyPercentage({ startDate: startDate, endDate: endDate })
   });
   const totalDaysIsOccupied = occupancyRooms.reduce((prevValue, currentValue) => {

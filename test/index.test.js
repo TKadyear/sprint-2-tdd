@@ -209,7 +209,7 @@ describe("Function totalOccupancyPercentage", () => {
     // Assert
     expect(actualValue).toBe(expectValue);
   })
-  test("When all rooms are occupied in that duration", () => {
+  test.skip("When all rooms are occupied in that duration", () => {
     //Arrange
     const listRooms = [
       new Room({ ...templateRoom, booking: bookingList }),
