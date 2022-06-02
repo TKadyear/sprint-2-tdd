@@ -1,6 +1,24 @@
 # Sprint 2 - Test Driven Development
 
-## Requirements
+### Clone this repository
+```bash
+# Clone this repository
+$ git clone https://github.com/TKadyear/sprint-2-tdd.git
+
+# Go into the repository
+$ cd sprint-2-tdd
+
+# Install dependencies
+$ npm install
+
+# Run the test
+$ npm run test
+
+# Run the test coverage
+$ npm run coverage
+```
+
+## Requirements of the exercise
 Make the next class with the methods:
 - Room
   -  Properties:
