@@ -1,12 +1,12 @@
-const { Room, Booking, totalOccupancyPercentage, availableRooms } = require("./index")
+import { Room, Booking, totalOccupancyPercentage, availableRooms, room, roomBooked } from "./index";
 
-const templateRoom = {
+const templateRoom: room = {
   name: "Ocean",
-  bookings: [],
+  bookingsList: [],
   rate: 2500,
   discount: 0
 }
-const templateBookings = {
+const templateBookings: roomBooked = {
   name: "Bertha Raynor",
   email: "berthaR@gmail.com",
   checkIn: "2022-05-17T12:53:14.850Z",
@@ -27,7 +27,7 @@ describe("class Room, method isOccupied", () => {
   test("If the room is not occupied", () => {
     const bookingList = [{ ...templateBookings, checkIn: "2022-06-10", checkOut: "2022-06-30" }, { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" }]
     //Arrange
-    const room = new Room({ ...templateRoom, bookings: bookingList });
+    const room = new Room({ ...templateRoom, bookingsList: bookingList });
     // Act
     const actualValue = room.isOccupied("2022-10-18");
     // Assert
@@ -36,7 +36,7 @@ describe("class Room, method isOccupied", () => {
   test("If the room is occupied", () => {
     //Arrange
     const bookingList = [{ ...templateBookings, checkIn: "2022-06-10", checkOut: "2022-06-30" }, { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" }]
-    const room = new Room({ ...templateRoom, bookings: bookingList });
+    const room = new Room({ ...templateRoom, bookingsList: bookingList });
     const expectValue = "Bertha Raynor";
     // Act
     const actualValue = room.isOccupied("2022-06-18");
@@ -54,7 +54,7 @@ describe("class Room, method occupancyPercentage", () => {
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" },
       { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-11" },
     ]
-    const room = new Room({ ...templateRoom, bookings: bookingList });
+    const room = new Room({ ...templateRoom, bookingsList: bookingList });
     const expectValue = 50;
     // Act
     const duration = { startDate: "2022-06-01", endDate: "2022-06-21" }
@@ -72,7 +72,7 @@ describe("class Room, method occupancyPercentage", () => {
       { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" },
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" }
     ]
-    const room = new Room({ ...templateRoom, bookings: bookingList });
+    const room = new Room({ ...templateRoom, bookingsList: bookingList });
     const expectValue = 75; // 15days / 20 days is occupied = 0.75 , 0.75 * 100 = 75
     // Act
     const duration = { startDate: "2022-06-01", endDate: "2022-06-21" };
@@ -82,7 +82,7 @@ describe("class Room, method occupancyPercentage", () => {
   })
   test("Check the 100 occupancyPercentage", () => {
     //Arrange
-    const bookingList = [
+    const bookingListTemplate = [
       { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
       { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-13" },
       { ...templateBookings, checkIn: "2022-06-17", checkOut: "2022-06-30" },
@@ -90,7 +90,7 @@ describe("class Room, method occupancyPercentage", () => {
       { ...templateBookings, checkIn: "2022-07-20", checkOut: "2022-08-30" },
       { ...templateBookings, checkIn: "2022-08-10", checkOut: "2022-08-30" }
     ]
-    const room = new Room({ ...templateRoom, bookings: bookingList });
+    const room = new Room({ ...templateRoom, bookingsList: bookingListTemplate });
     const expectValue = 100; // 15days / 20 days is occupied = 0.75 , 0.75 * 100 = 75
     // Act
     const duration = { startDate: "2022-06-01", endDate: "2022-06-05" };
@@ -167,7 +167,7 @@ describe("class Booking, method getFee", () => {
 })
 
 describe("Function totalOccupancyPercentage", () => {
-  const bookingList = [
+  const bookingListTemplate = [
     { ...templateBookings, checkIn: "2022-06-01", checkOut: "2022-06-06" },
     { ...templateBookings, checkIn: "2022-06-06", checkOut: "2022-06-12" },
     { ...templateBookings, checkIn: "2022-06-17", checkOut: "2022-06-30" },
@@ -186,8 +186,8 @@ describe("Function totalOccupancyPercentage", () => {
     ]
 
     const listRooms = [
-      new Room({ ...templateRoom, bookings: bookingList }),
-      new Room({ ...templateRoom, name: "Suite Sea", bookings: anotherBookingList })
+      new Room({ ...templateRoom, bookingsList: bookingListTemplate }),
+      new Room({ ...templateRoom, name: "Suite Sea", bookingsList: anotherBookingList })
     ];
     const expectValue = 63; // 75 + 50 (occupancy each room)= 125 , 125 / 2(quantity/amount ) = Math.round(62.5)
     const params = { rooms: [...listRooms], startDate: "2022-06-01", endDate: "2022-06-21" };
@@ -199,8 +199,8 @@ describe("Function totalOccupancyPercentage", () => {
   test("When any room is occupied in that duration", () => {
     //Arrange
     const listRooms = [
-      new Room({ ...templateRoom, bookings: bookingList }),
-      new Room({ ...templateRoom, name: "Suite Sea", booking: bookingList })
+      new Room({ ...templateRoom, bookingsList: bookingListTemplate }),
+      new Room({ ...templateRoom, name: "Suite Sea", bookingsList: bookingListTemplate })
     ];
     const expectValue = 0;
     const params = { rooms: [...listRooms], startDate: "2022-10-01", endDate: "2022-10-15" };
@@ -212,8 +212,8 @@ describe("Function totalOccupancyPercentage", () => {
   test.skip("When all rooms are occupied in that duration", () => {
     //Arrange
     const listRooms = [
-      new Room({ ...templateRoom, booking: bookingList }),
-      new Room({ ...templateRoom, name: "Suite Sea", booking: bookingList })
+      new Room({ ...templateRoom, bookingsList: bookingListTemplate }),
+      new Room({ ...templateRoom, name: "Suite Sea", bookingsList: bookingListTemplate })
     ];
     const expectValue = 100;
     const params = { rooms: [...listRooms], startDate: "2022-06-01", endDate: "2022-06-06" };
@@ -248,9 +248,9 @@ describe("Function availableRooms", () => {
 
   test("Check the availables rooms", () => {
     //Arrange
-    const room1 = new Room({ ...templateRoom, bookings: [...bookingList] });
-    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookings: [...SuiteSeaBookingList] });
-    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookings: [...OceanBlueBookingList] });
+    const room1 = new Room({ ...templateRoom, bookingsList: [...bookingList] });
+    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookingsList: [...SuiteSeaBookingList] });
+    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookingsList: [...OceanBlueBookingList] });
     const listRooms = [room1, room2, room3];
     const expectValue = [room1, room2, room3];
 
@@ -262,9 +262,9 @@ describe("Function availableRooms", () => {
   })
   test("Edge case because the checkIn one of the booked room and the checkout of the params are the same day", () => {
     //Arrange
-    const room1 = new Room({ ...templateRoom, bookings: [...bookingList] });
-    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookings: [...SuiteSeaBookingList] });
-    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookings: [...OceanBlueBookingList] });
+    const room1 = new Room({ ...templateRoom, bookingsList: [...bookingList] });
+    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookingsList: [...SuiteSeaBookingList] });
+    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookingsList: [...OceanBlueBookingList] });
     const listRooms = [room1, room2, room3];
 
     const params = { rooms: [...listRooms], startDate: "2022-06-06", endDate: "2022-06-10" };
@@ -275,9 +275,9 @@ describe("Function availableRooms", () => {
   })
   test("When any room is available", () => {
     //Arrange
-    const room1 = new Room({ ...templateRoom, bookings: [...bookingList] });
-    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookings: [...SuiteSeaBookingList] });
-    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookings: [...OceanBlueBookingList] });
+    const room1 = new Room({ ...templateRoom, bookingsList: [...bookingList] });
+    const room2 = new Room({ ...templateRoom, name: "Suite Sea", bookingsList: [...SuiteSeaBookingList] });
+    const room3 = new Room({ ...templateRoom, name: "Ocean Blue", bookingsList: [...OceanBlueBookingList] });
     const listRooms = [room1, room2, room3];
     // const expectValue = [];
 

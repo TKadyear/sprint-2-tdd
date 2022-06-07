@@ -1,10 +1,11 @@
-const getTimeStamp = (date) => new Date(date).getTime();
-const getDaysBetween = (startDate, endDate) => {
+const getTimeStamp = (date: string): number => new Date(date).getTime();
+const getDaysBetween = (startDate: string, endDate: string) => {
   const msPass = Math.abs(getTimeStamp(startDate) - getTimeStamp(endDate));
   const tiempo = 1000 * 60 * 60 * 24;
   return Math.round((msPass / tiempo))
 };
-const isInRange = ({ filterStartDate, filterEndDate, checkIn, checkOut }) => {
+
+const isInRange = ({ filterStartDate, filterEndDate, checkIn, checkOut }: { filterStartDate: string, filterEndDate: string, checkIn: string, checkOut: string }): boolean => {
   const FilterStartDate = getTimeStamp(filterStartDate);
   const FilterEndDate = getTimeStamp(filterEndDate);
   const CheckIn = getTimeStamp(checkIn);
@@ -14,16 +15,36 @@ const isInRange = ({ filterStartDate, filterEndDate, checkIn, checkOut }) => {
   const conditionInProgress = CheckIn <= FilterStartDate && CheckOut >= FilterEndDate;
   return (conditionCheckIn || conditionCheckOut || conditionInProgress);
 };
-class Room {
-  constructor({ name, bookings, rate, discount }) {
+
+export interface room {
+  name: string;
+  bookingsList: Array<object>;// No se si se puede hacer que esten interelacionados.
+  rate: number;
+  discount: number;
+}
+export interface roomBooked {
+  name: string,
+  email: string,
+  checkIn: string, // Falta poner el format de date
+  checkOut: string,// !
+  discount: number,
+  room: room
+}
+
+export class Room {
+  name: string;
+  bookingsList: Array<object>;
+  rate: number;
+  discount: number;
+  constructor({ name, bookingsList, rate, discount }) {
     this.name = name;
-    this.bookings = bookings;
+    this.bookingsList = bookingsList;
     this.rate = rate;
     this.discount = discount;
   }
-  isOccupied(date) {
+  isOccupied(date: string): string | boolean {
     const dateRequired = getTimeStamp(date);
-    const findRoom = [...this.bookings].find(room => {
+    const findRoom = [...this.bookingsList].find(room => {
       const timeStampCheckIn = getTimeStamp(room.checkIn);
       const timeStampCheckOut = getTimeStamp(room.checkOut);
       if (timeStampCheckIn > dateRequired && dateRequired < timeStampCheckOut) {
@@ -50,7 +71,16 @@ class Room {
     return result;
   }
 };
-class Booking {
+// interface booking
+
+export class Booking {
+  name: string;
+  email: string;
+  checkIn: string;
+  checkOut: string;
+  discount: number;
+  room: string;//Es un objeto
+
   constructor({ name, email, checkIn, checkOut, discount, room }) {
     this.name = name;
     this.email = email;
@@ -66,7 +96,7 @@ class Booking {
     return result;
   }
 };
-const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
+export const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
   const occupancyRooms = [...rooms].map(room => {
     return room.occupancyPercentage({ startDate: startDate, endDate: endDate })
   });
@@ -77,11 +107,10 @@ const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
   return result;
 };
 
-const availableRooms = ({ rooms, startDate, endDate }) => {
+export const availableRooms = ({ rooms, startDate, endDate }) => {
   const available = [...rooms].filter(room => {
     const isValid = room.bookings.some(booked => isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: booked.checkIn, checkOut: booked.checkOut }) === true)
     return !isValid;
   });
   return available.length ? available : false;
 };
-module.exports = { Room, Booking, totalOccupancyPercentage, availableRooms };
