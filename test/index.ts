@@ -1,8 +1,8 @@
 const getTimeStamp = (date: string): number => new Date(date).getTime();
-const getDaysBetween = (startDate: string, endDate: string) => {
+const getDaysBetween = (startDate: string, endDate: string): number => {
   const msPass = Math.abs(getTimeStamp(startDate) - getTimeStamp(endDate));
   const tiempo = 1000 * 60 * 60 * 24;
-  return Math.round((msPass / tiempo))
+  return Math.round((msPass / tiempo));
 };
 
 const isInRange = ({ filterStartDate, filterEndDate, checkIn, checkOut }: { filterStartDate: string, filterEndDate: string, checkIn: string, checkOut: string }): boolean => {
@@ -15,33 +15,36 @@ const isInRange = ({ filterStartDate, filterEndDate, checkIn, checkOut }: { filt
   const conditionInProgress = CheckIn <= FilterStartDate && CheckOut >= FilterEndDate;
   return (conditionCheckIn || conditionCheckOut || conditionInProgress);
 };
+type infoBooked = {
+  name: string,
+  email: string,
+  checkIn: string,
+  checkOut: string,
+  discount: number,
+};
 
 export interface room {
   name: string;
-  bookingsList: Array<object>;// No se si se puede hacer que esten interelacionados.
+  bookingsList: Array<infoBooked>;// No se si se puede hacer que esten interelacionados.
   rate: number;
   discount: number;
-}
-export interface roomBooked {
-  name: string,
-  email: string,
-  checkIn: string, // Falta poner el format de date
-  checkOut: string,// !
-  discount: number,
-  room: room
-}
+  isOccupied: (date: string) => string | boolean;
+  occupancyPercentage: ({ startDate, endDate }: { startDate: string, endDate: string }) => number
+};
 
-export class Room {
-  name: string;
-  bookingsList: Array<object>;
-  rate: number;
-  discount: number;
-  constructor({ name, bookingsList, rate, discount }) {
+export class Room implements room {
+  name;
+  bookingsList;
+  rate;
+  discount;
+
+  constructor({ name, bookingsList, rate, discount }: room) {
     this.name = name;
     this.bookingsList = bookingsList;
     this.rate = rate;
     this.discount = discount;
   }
+
   isOccupied(date: string): string | boolean {
     const dateRequired = getTimeStamp(date);
     const findRoom = [...this.bookingsList].find(room => {
@@ -53,8 +56,9 @@ export class Room {
     })
     return findRoom ? findRoom.name : false;
   }
-  occupancyPercentage({ startDate, endDate }) {
-    const totalDaysIsOccupied = [...this.bookings]
+
+  occupancyPercentage({ startDate, endDate }: { startDate: string, endDate: string }): number {
+    const totalDaysIsOccupied = this.bookingsList
       .filter(room =>
         isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: room.checkIn, checkOut: room.checkOut }))
       .map(room => {
@@ -66,22 +70,32 @@ export class Room {
       .reduce((prevValue, currentValue) => {
         return currentValue + prevValue;
       }, 0);
+
     const totalDaysFilter = getDaysBetween(startDate, endDate);
     const result = Math.round((totalDaysIsOccupied / totalDaysFilter) * 100);
     return result;
   }
 };
-// interface booking
 
-export class Booking {
-  name: string;
-  email: string;
-  checkIn: string;
-  checkOut: string;
-  discount: number;
-  room: string;//Es un objeto
+export interface roomBooked {
+  name: string,
+  email: string,
+  checkIn: string,
+  checkOut: string,
+  discount: number,
+  room: room,
+  getFee: () => number
+};
 
-  constructor({ name, email, checkIn, checkOut, discount, room }) {
+export class Booking implements roomBooked {
+  name;
+  email;
+  checkIn;
+  checkOut;
+  discount;
+  room;
+
+  constructor({ name, email, checkIn, checkOut, discount, room }: roomBooked) {
     this.name = name;
     this.email = email;
     this.checkIn = checkIn;
@@ -89,6 +103,7 @@ export class Booking {
     this.discount = discount;
     this.room = room;
   }
+
   getFee() {
     const totalDiscount = this.discount + this.room.discount;
     const percentagePrice = totalDiscount < 100 ? (100 - totalDiscount) / 100 : 0;
@@ -96,8 +111,9 @@ export class Booking {
     return result;
   }
 };
-export const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
-  const occupancyRooms = [...rooms].map(room => {
+
+export const totalOccupancyPercentage = ({ rooms, startDate, endDate }: { rooms: Array<room>, startDate: string, endDate: string }) => {
+  const occupancyRooms = rooms.map(room => {
     return room.occupancyPercentage({ startDate: startDate, endDate: endDate })
   });
   const totalDaysIsOccupied = occupancyRooms.reduce((prevValue, currentValue) => {
@@ -107,9 +123,10 @@ export const totalOccupancyPercentage = ({ rooms, startDate, endDate }) => {
   return result;
 };
 
-export const availableRooms = ({ rooms, startDate, endDate }) => {
-  const available = [...rooms].filter(room => {
-    const isValid = room.bookings.some(booked => isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: booked.checkIn, checkOut: booked.checkOut }) === true)
+export const availableRooms = ({ rooms, startDate, endDate }: { rooms: Array<room>, startDate: string, endDate: string }): Array<room> | boolean => {
+  const available = rooms.filter(room => {
+
+    const isValid = room.bookingsList.some(booked => isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: booked.checkIn, checkOut: booked.checkOut }) === true)
     return !isValid;
   });
   return available.length ? available : false;
