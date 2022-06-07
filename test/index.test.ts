@@ -5,7 +5,7 @@ const templateRoom: room = {
   bookingsList: [],
   rate: 2500,
   discount: 0
-}
+};
 const templateBookings: roomBooked = {
   name: "Bertha Raynor",
   email: "berthaR@gmail.com",

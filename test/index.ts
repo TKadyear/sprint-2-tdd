@@ -25,7 +25,7 @@ type infoBooked = {
 
 export interface room {
   name: string;
-  bookingsList: Array<infoBooked>;// No se si se puede hacer que esten interelacionados.
+  bookingsList: Array<infoBooked>;
   rate: number;
   discount: number;
   isOccupied: (date: string) => string | boolean;
