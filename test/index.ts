@@ -2,8 +2,8 @@ type zeroToNine = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 type N = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 type YYYY = `20${zeroToNine}${zeroToNine}`;
 type MM = `0${N}` | `1${0 | 1 | 2}`;
-type DD = `${0 | 1 | 2}${N}` | `${3}${0 | 1}`;
-type strDate = `${YYYY}-${MM}-${DD}`;
+type DD = `${0 | 1 | 2}${zeroToNine}` | `${3}${0 | 1}`;
+export type strDate = `${YYYY}-${MM}-${DD}`;
 
 const getTimeStamp = (date: strDate): number => new Date(date).getTime();
 
@@ -110,16 +110,13 @@ export class Booking implements roomBooked {
 export const totalOccupancyPercentage = ({ rooms, startDate, endDate }: { rooms: Array<Room>, startDate: strDate, endDate: strDate }) => {
   const totalDaysIsOccupied = rooms
     .map(room => room.occupancyPercentage({ startDate: startDate, endDate: endDate }))
-    .reduce((prevValue, currentValue) => {
-      return currentValue + prevValue;
-    }, 0);
+    .reduce((prevValue, currentValue) => currentValue + prevValue, 0);
   const result = Math.round(totalDaysIsOccupied / rooms.length);
   return result;
 };
 
 export const availableRooms = ({ rooms, startDate, endDate }: { rooms: Array<Room>, startDate: strDate, endDate: strDate }): Array<Room> | boolean => {
   const available = rooms.filter(room => {
-
     const isValid = room.bookingsList.some(booked => isInRange({ filterStartDate: startDate, filterEndDate: endDate, checkIn: booked.checkIn, checkOut: booked.checkOut }) === true)
     return !isValid;
   });
