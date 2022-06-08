@@ -15,7 +15,7 @@ const isInRange = ({ filterStartDate, filterEndDate, checkIn, checkOut }: { filt
   const conditionInProgress = CheckIn <= FilterStartDate && CheckOut >= FilterEndDate;
   return (conditionCheckIn || conditionCheckOut || conditionInProgress);
 };
-type infoBooked = {
+export type infoBooked = {
   name: string,
   email: string,
   checkIn: string,
@@ -28,11 +28,17 @@ export interface room {
   bookingsList: Array<infoBooked>;
   rate: number;
   discount: number;
+};
+export interface roomFunc {
+  name: string;
+  bookingsList: Array<infoBooked>;
+  rate: number;
+  discount: number;
   isOccupied: (date: string) => string | boolean;
   occupancyPercentage: ({ startDate, endDate }: { startDate: string, endDate: string }) => number
 };
 
-export class Room implements room {
+export class Room {
   name;
   bookingsList;
   rate;
@@ -84,10 +90,10 @@ export interface roomBooked {
   checkOut: string,
   discount: number,
   room: room,
-  getFee: () => number
+  // getFee: () => number
 };
 
-export class Booking implements roomBooked {
+export class Booking {
   name;
   email;
   checkIn;
@@ -112,7 +118,7 @@ export class Booking implements roomBooked {
   }
 };
 
-export const totalOccupancyPercentage = ({ rooms, startDate, endDate }: { rooms: Array<room>, startDate: string, endDate: string }) => {
+export const totalOccupancyPercentage = ({ rooms, startDate, endDate }: { rooms: Array<roomFunc>, startDate: string, endDate: string }) => {
   const occupancyRooms = rooms.map(room => {
     return room.occupancyPercentage({ startDate: startDate, endDate: endDate })
   });
