@@ -4,7 +4,13 @@ const templateRoom: room = {
   name: "Ocean",
   bookingsList: [],
   rate: 2500,
-  discount: 0
+  discount: 0,
+  isOccupied: function (date: string): string | boolean {
+    throw new Error("Function not implemented.");
+  },
+  occupancyPercentage: function ({ startDate, endDate }: { startDate: string; endDate: string; }): number {
+    throw new Error("Function not implemented.");
+  }
 };
 const templateBookings: roomBooked = {
   name: "Bertha Raynor",
@@ -12,7 +18,10 @@ const templateBookings: roomBooked = {
   checkIn: "2022-05-17T12:53:14.850Z",
   checkOut: "2022-05-17T12:53:14.850Z",
   discount: 0,
-  room: { ...templateRoom }
+  room: { ...templateRoom },
+  getFee: function (): number {
+    throw new Error("Function not implemented.");
+  }
 };
 
 describe("class Room, method isOccupied", () => {
