@@ -25,7 +25,7 @@ const isInRange = ({ filterStartDate, filterEndDate, checkIn, checkOut }: { filt
   return (conditionCheckIn || conditionCheckOut || conditionInProgress);
 };
 
-export interface room {
+export interface IRoom {
   name: string;
   bookingsList: Array<Booking>;
   rate: number;
@@ -38,7 +38,7 @@ export class Room {
   rate;
   discount;
 
-  constructor({ name, bookingsList, rate, discount }: room) {
+  constructor({ name, bookingsList, rate, discount }: IRoom) {
     this.name = name;
     this.bookingsList = bookingsList;
     this.rate = rate;
@@ -73,7 +73,7 @@ export class Room {
     return result;
   }
 };
-export interface roomBooked {
+export interface IRoomBooked {
   name: string,
   email: string,
   checkIn: strDate,
@@ -82,7 +82,7 @@ export interface roomBooked {
   room: Room
 };
 
-export class Booking implements roomBooked {
+export class Booking implements IRoomBooked {
   name;
   email;
   checkIn;
@@ -90,7 +90,7 @@ export class Booking implements roomBooked {
   discount;
   room;
 
-  constructor({ name, email, checkIn, checkOut, discount, room }: roomBooked) {
+  constructor({ name, email, checkIn, checkOut, discount, room }: IRoomBooked) {
     this.name = name;
     this.email = email;
     this.checkIn = checkIn;

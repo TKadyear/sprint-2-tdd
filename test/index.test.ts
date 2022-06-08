@@ -1,11 +1,11 @@
-import { Room, Booking, totalOccupancyPercentage, availableRooms, roomBooked, room, strDate } from "./index";
-const templateRoom: room = {
+import { Room, Booking, totalOccupancyPercentage, availableRooms, IRoomBooked, IRoom, strDate } from "./index";
+const templateRoom: IRoom = {
   name: "Ocean",
   bookingsList: [],
   rate: 2500,
   discount: 0,
 };
-const templateBookings: roomBooked = {
+const templateBookings: IRoomBooked = {
   name: "Bertha Raynor",
   email: "berthaR@gmail.com",
   checkIn: "2022-05-17",
