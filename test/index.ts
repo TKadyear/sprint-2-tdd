@@ -32,7 +32,7 @@ export interface IRoom {
   discount: number;
 };
 
-export class Room {
+export class Room implements IRoom {
   name;
   bookingsList;
   rate;
